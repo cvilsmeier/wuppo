@@ -1,0 +1,20 @@
+
+{{template "_head.html"}}
+
+<h1>Wuppo Chat</h1>
+
+{{if eq .reason "notLoggedIn"}}
+    You are not logged in or your session has expired<br>
+    <br>
+{{end}}
+
+<form method="POST">
+    <input type="text" name="name" placeholder="Your name">
+    <button type="submit">Enter the chatroom</button>
+</form>
+
+{{range .errors}}
+    {{.}}
+{{end}}
+
+{{template "_foot.html"}}

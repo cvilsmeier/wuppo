@@ -1,0 +1,16 @@
+
+{{template "_head.html"}}
+
+<h1>{{.name}} - Wuppo Chat</h1>
+<a href="/logout">leave chat room</a><br>
+<br>
+<form method="POST">
+    <input type="text" name="message" placeholder="Enter message here" size="80" autofocus><br>
+    <button type="submit">send</button>
+</form>
+<br>
+{{range .messages}}
+    {{.}}<br><br>
+{{end}}
+
+{{template "_foot.html"}}
