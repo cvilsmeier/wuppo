@@ -1,4 +1,4 @@
-// A web framework for Go, ridiculously simple.
+// Package wuppo provides a web framework for Go, ridiculously simple.
 package wuppo
 
 import (
@@ -42,8 +42,7 @@ func newReq(w http.ResponseWriter, r *http.Request, store SessionStore) *Req {
 	return &req
 }
 
-// Param returns the value of a request parameter. POST params have
-// precedence over url query string parameters.
+// Param returns the value of a request parameter.
 func (req *Req) Param(name string) string {
 	r := req.r
 	if r == nil {
@@ -53,6 +52,7 @@ func (req *Req) Param(name string) string {
 	return r.FormValue(name)
 }
 
+// PutSessionValue sets a keyed session value.
 func (req *Req) PutSessionValue(key string, value string) {
 	newSid := req.store.PutValue(req.sid, key, value)
 	if newSid != req.sid {
@@ -67,10 +67,13 @@ func (req *Req) PutSessionValue(key string, value string) {
 	}
 }
 
+// GetSessionValue returns a keyed session value.
+// If not found, it returns the empty string.
 func (req *Req) GetSessionValue(key string) string {
 	return req.store.GetValue(req.sid, key)
 }
 
+// KillSession kills the session associated with this request
 func (req *Req) KillSession() {
 	req.store.KillSession(req.sid)
 }

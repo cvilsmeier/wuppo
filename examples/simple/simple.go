@@ -11,7 +11,7 @@ func main() {
 	handler := wuppo.DefaultHandler(func(req *wuppo.Req) {
 		req.Html = fmt.Sprintf("<html>Hello %s</html>", req.Path)
 	})
-	// register it with go's http
+	// register as http.Handler
 	http.Handle("/", handler)
 	// start on port 8080
     fmt.Printf("now goto http://localhost:8080\n")

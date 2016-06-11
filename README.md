@@ -1,7 +1,11 @@
 
+
 # wuppo
 
+[![GoDoc](https://godoc.org/github.com/cvilsmeier/wuppo?status.svg)](https://godoc.org/github.com/cvilsmeier/wuppo)
+
 A web framework for Go, ridiculously simple.
+
 
 ## Usage
 
