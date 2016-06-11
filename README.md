@@ -1,7 +1,7 @@
 
 # wuppo
 
-Package wuppo provides nothing but a ridiculously simple web-app library for go (golang).
+A web framework for Go, ridiculously simple.
 
 ## Usage
 

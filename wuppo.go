@@ -1,16 +1,4 @@
-// Package wuppo provides a simple web-app library for go (golang).
-// A typical usage is like this:
-//
-//     func main() {
-//         sessionStore := wuppo.NewMemStore()
-//         handler := wuppo.NewHandler(sessionStore, func(req *wuppo.Req){
-//             req.Html = "<html>Hello Wuppo</html>"
-//         })
-//         http.Handle("/", handler)
-//         log.Panic(http.ListenAndServe(":80", nil))
-//     }
-//
-//
+// A web framework for Go, ridiculously simple.
 package wuppo
 
 import (
