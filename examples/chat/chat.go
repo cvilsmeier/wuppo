@@ -12,10 +12,6 @@ import (
 	"time"
 )
 
-//
-// --------------------------------------------------
-//
-
 // Db is a simple in-memory database for the wuppo chat sample
 type Db struct {
 	mx       sync.Mutex
@@ -43,59 +39,58 @@ func (db *Db) GetMessages() []string {
 }
 
 //
-// --------------------------------------------------
+// serve() methods
 //
 
-var theDb *Db
-
-func serveIndex(req *wuppo.Req) {
-	req.Model["reason"] = req.Param("reason")
-	if req.Method == "GET" {
-		req.Template = "index.html"
+func serveIndex(req wuppo.Req) {
+	reason := req.FormValue("reason")
+	req.SetModelValue("reason", reason)
+	if req.IsGet() {
+		req.SetTemplate("index.html")
 		return
 	}
-	name := req.Param("name")
+	name := req.FormValue("name")
 	name = strings.TrimSpace(name)
 	if name == "" {
-		req.Model["errors"] = []string{"Name must not be empty"}
-		req.Template = "index.html"
+		req.SetModelValue("errors", []string{"Name must not be empty"})
+		req.SetTemplate("index.html")
 		return
 	}
-	req.PutSessionValue("name", name)
-	req.Redirect = "/chat"
+	req.SetSessionValue("name", name)
+	req.SetRedirect("/chat")
 }
 
-func serveLogout(req *wuppo.Req) {
+func serveLogout(req wuppo.Req) {
 	req.KillSession()
-	req.Redirect = "/"
+	req.SetRedirect("/")
 }
 
-func serveChat(req *wuppo.Req) {
-	name := req.GetSessionValue("name")
+func serveChat(req wuppo.Req) {
+	name := req.SessionValue("name")
 	if name == "" {
-		req.Redirect = "/?reason=notLoggedIn"
+		req.SetRedirect("/?reason=notLoggedIn")
 		return
 	}
-	req.Model["name"] = name
-	if req.Method == "POST" {
-		message := req.Param("message")
+	req.SetModelValue("name", name)
+	if req.IsPost() {
+		message := req.FormValue("message")
 		message = strings.TrimSpace(message)
 		if message != "" {
-			db.AddMessage(name + ": " + message)
+			theDb.AddMessage(name + ": " + message)
 		}
 	}
-	req.Model["messages"] = db.GetMessages()
-	req.Template = "chat.html"
+	req.SetModelValue("messages", theDb.GetMessages())
+	req.SetTemplate("chat.html")
 }
 
-func serveSessions(req *wuppo.Req) {
-	infos := sessionStore.GetSessionInfos()
-	req.Model["infos"] = infos
-	req.Template = "sessions.html"
+func serveSessions(req wuppo.Req) {
+	infos := theSessionStore.GetSessionInfos()
+	req.SetModelValue("infos", infos)
+	req.SetTemplate("sessions.html")
 }
 
-func serve(req *wuppo.Req) {
-	switch req.Path {
+func serve(req wuppo.Req) {
+	switch req.Path() {
 	case "/":
 		serveIndex(req)
 	case "/logout":
@@ -105,27 +100,28 @@ func serve(req *wuppo.Req) {
 	case "/sessions":
 		serveSessions(req)
 	default:
-		req.Status = 404
+		req.SetStatus(http.StatusNotFound)
 	}
 }
 
-var sessionStore wuppo.SessionStore
-var handler wuppo.Handler
-var db *Db
+//
+// globals
+//
+var theSessionStore = wuppo.NewMemStore()
+var theDb = NewDb()
 
 func main() {
 	// init a database that stores our messages
-	db = NewDb()
+	//theDb = NewDb()
 	// init wuppo, store session data in memory
-	sessionStore = wuppo.NewMemStore()
-	handler = wuppo.NewHandler(serve, sessionStore)
-	http.Handle("/", handler)
+	//theSessionStore = wuppo.NewMemStore()
+	http.Handle("/", wuppo.NewHandler(serve, theSessionStore))
 	// serve static files (favicon)
 	http.Handle("/favicon.ico", http.FileServer(http.Dir(".")))
 	// for development only: exit if a go file changes
 	go watchFiles()
 	// start the server on port 8080
-	fmt.Printf("chat server is up\n")
+	fmt.Printf("chat server is up, goto http://localhost:8080\n")
 	log.Panic(http.ListenAndServe(":8080", nil))
 }
 

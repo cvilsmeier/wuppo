@@ -13,16 +13,31 @@ A very basic usage is this:
 
 
 ```go
+package main
+
+import (
+	"fmt"
+	"github.com/cvilsmeier/wuppo"
+	"log"
+	"net/http"
+)
+
+func serve(req wuppo.Req) {
+	html := fmt.Sprintf("<html>%s %s</html>", req.Method(), req.Path())
+	req.SetHtml(html)
+}
+
 func main() {
-    handler := wuppo.DefaultHandler(func (req *wuppo.Req) {
-        req.Html = fmt.Sprintf("<html>Hello %s</html>", req.Path)
-    })
-    http.Handle("/", handler)
-    log.Panic(http.ListenAndServe(":8080", nil))
+	// register a default wuppo http.Handler
+	// default means: store session data in memory
+	http.Handle("/", wuppo.DefaultHandler(serve))
+	// start on port 8080
+	fmt.Printf("server is up, now goto http://localhost:8080\n")
+	log.Fatal(http.ListenAndServe(":8080", nil))
 }
 ```
 
-See the examples folder for more samples
+See the examples folder for more usage examples.
 
 ## Licence
 
