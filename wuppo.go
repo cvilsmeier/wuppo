@@ -12,9 +12,9 @@ import (
 // Handler is a net/http/Handler implementation that serves as entry
 // point to wuppo.
 type Handler struct {
-	serve ServeFunc
-	store SessionStore
-    templatePattern string
+	serve           ServeFunc
+	store           SessionStore
+	templatePattern string
 }
 
 // ServeFunc is a callback method that responds to an incoming request.
@@ -24,9 +24,9 @@ type ServeFunc func(req Req)
 // See https://golang.org/pkg/html/template/#ParseGlob for a description of the templatePattern.
 func NewHandler(serve ServeFunc, sessionStore SessionStore, templatePattern string) Handler {
 	h := Handler{
-		serve: serve,
-		store: sessionStore,
-        templatePattern: templatePattern,
+		serve:           serve,
+		store:           sessionStore,
+		templatePattern: templatePattern,
 	}
 	return h
 }
@@ -36,8 +36,8 @@ func NewHandler(serve ServeFunc, sessionStore SessionStore, templatePattern stri
 func DefaultHandler(serve ServeFunc) Handler {
 	memstore := NewMemStore()
 	h := Handler{
-		serve: serve,
-		store: memstore,
+		serve:           serve,
+		store:           memstore,
 		templatePattern: "*.html",
 	}
 	return h
