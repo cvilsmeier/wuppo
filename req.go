@@ -31,10 +31,13 @@ type Req interface {
 	// Model returns the model as a map.
 	Model() map[string]interface{}
 
-	// SetSessionValue puts a named value in the session associated with this request. If the request has no valid session, it creates one. If the keyed value already exists, it is replaced.
+	// SetSessionValue puts a named value in the session associated
+	// with this request. If the request has no valid session, it creates
+	// one. If the keyed value already exists, it is replaced.
 	SetSessionValue(name string, value string)
 
-	// SessionValue returns the named session value, or the empty string if the key was not found or this reqeust has no valid session.
+	// SessionValue returns the named session value, or the empty string
+	// if the key was not found or this reqeust has no valid session.
 	SessionValue(name string) string
 
 	// KillSession kills the session associated with this request.
@@ -53,6 +56,8 @@ type Req interface {
 	SetStatus(code int)
 }
 
+// reqImpl is the default implementation of Req. It's based on a
+// http.Request and a http.ResponseWriter
 type reqImpl struct {
 	w        http.ResponseWriter
 	r        *http.Request
@@ -149,4 +154,89 @@ func (req *reqImpl) SetRedirect(url string) {
 
 func (req *reqImpl) SetStatus(code int) {
 	req.status = code
+}
+
+// ReqStub implements Req but can be created and manipulated programmatically.
+// Use it for unit-testing your controller logic.
+type ReqStub struct {
+	MethodString string
+	PathString   string
+	FormValueMap map[string]string
+	ModelMap     map[string]interface{}
+	SessionMap   map[string]string
+	Html         string
+	Template     string
+	Redirect     string
+	Status       int
+}
+
+func NewReqStub(method string, path string) *ReqStub {
+	req := ReqStub{
+		MethodString: method,
+		PathString:   path,
+		FormValueMap: make(map[string]string),
+		ModelMap:     make(map[string]interface{}),
+		SessionMap:   make(map[string]string),
+	}
+	return &req
+}
+
+func (req *ReqStub) Method() string {
+	return req.MethodString
+}
+
+func (req *ReqStub) IsGet() bool {
+	return req.MethodString == "GET"
+}
+
+func (req *ReqStub) IsPost() bool {
+	return req.MethodString == "POST"
+}
+
+func (req *ReqStub) Path() string {
+	return req.PathString
+}
+
+func (req *ReqStub) FormValue(name string) string {
+	return req.FormValueMap[name]
+}
+
+func (req *ReqStub) SetModelValue(name string, value interface{}) {
+	req.ModelMap[name] = value
+}
+
+func (req *ReqStub) ModelValue(name string) interface{} {
+	return req.ModelMap[name]
+}
+
+func (req *ReqStub) Model() map[string]interface{} {
+	return req.ModelMap
+}
+
+func (req *ReqStub) SetSessionValue(name string, value string) {
+	req.SessionMap[name] = value
+}
+
+func (req *ReqStub) SessionValue(name string) string {
+	return req.SessionMap[name]
+}
+
+func (req *ReqStub) KillSession() {
+	req.SessionMap = nil
+}
+
+func (req *ReqStub) SetHtml(html string) {
+	req.Html = html
+}
+
+func (req *ReqStub) SetTemplate(template string) {
+	req.Template = template
+}
+
+func (req *ReqStub) SetRedirect(url string) {
+	req.Redirect = url
+}
+
+func (req *ReqStub) SetStatus(code int) {
+	req.Status = code
 }
