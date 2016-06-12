@@ -111,11 +111,8 @@ var theSessionStore = wuppo.NewMemStore()
 var theDb = NewDb()
 
 func main() {
-	// init a database that stores our messages
-	//theDb = NewDb()
-	// init wuppo, store session data in memory
-	//theSessionStore = wuppo.NewMemStore()
-	http.Handle("/", wuppo.NewHandler(serve, theSessionStore))
+	// init wuppo handler
+	http.Handle("/", wuppo.NewHandler(serve, theSessionStore, "*.html"))
 	// serve static files (favicon)
 	http.Handle("/favicon.ico", http.FileServer(http.Dir(".")))
 	// for development only: exit if a go file changes
