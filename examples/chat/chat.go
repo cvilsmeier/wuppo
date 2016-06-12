@@ -118,5 +118,3 @@ func main() {
 	fmt.Printf("chat server is up, goto http://localhost:8080\n")
 	log.Panic(http.ListenAndServe(":8080", nil))
 }
-
-

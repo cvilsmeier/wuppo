@@ -27,4 +27,3 @@ func watchFiles(millis time.Duration) {
 		time.Sleep(millis * time.Millisecond)
 	}
 }
-
