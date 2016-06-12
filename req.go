@@ -1,4 +1,3 @@
-// Package wuppo provides a web framework for Go, ridiculously simple.
 package wuppo
 
 import (
