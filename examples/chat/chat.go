@@ -5,11 +5,8 @@ import (
 	"github.com/cvilsmeier/wuppo"
 	"log"
 	"net/http"
-	"os"
-	"path/filepath"
 	"strings"
 	"sync"
-	"time"
 )
 
 // Db is a simple in-memory database for the wuppo chat sample
@@ -116,34 +113,10 @@ func main() {
 	// serve static files (favicon)
 	http.Handle("/favicon.ico", http.FileServer(http.Dir(".")))
 	// for development only: exit if a go file changes
-	go watchFiles()
+	go watchFiles(300)
 	// start the server on port 8080
 	fmt.Printf("chat server is up, goto http://localhost:8080\n")
 	log.Panic(http.ListenAndServe(":8080", nil))
 }
 
-//
-// file watchdog
-//
 
-func watchFiles() {
-	// stop if a *.go file changes
-	lastCheck := ""
-	for {
-		check := ""
-		filepath.Walk(".", func(path string, info os.FileInfo, err error) error {
-			if strings.HasSuffix(path, ".go") {
-				check = check + info.ModTime().String() + "_"
-			}
-			return nil
-		})
-		if lastCheck != "" && lastCheck != check {
-			fmt.Printf("some watched file changed, game over\n")
-			os.Exit(0)
-		}
-		lastCheck = check
-		time.Sleep(500 * time.Millisecond)
-	}
-}
-
-// eof
