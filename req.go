@@ -37,14 +37,14 @@ type Req interface {
 	SetSessionValue(name string, value interface{})
 
 	// SessionValue returns the named session value. If the key
-    // was not found or this request has no valid session, it returns nil.
+	// was not found or this request has no valid session, it returns nil.
 	SessionValue(name string) interface{}
 
 	// KillSession kills the session associated with this request.
 	KillSession()
 
-	// SetHtml sets a html reponse.
-	SetHtml(html string)
+	// SetHTML sets a html reponse.
+	SetHTML(html string)
 
 	// SetTemplate sets a template reponse.
 	SetTemplate(template string)
@@ -140,7 +140,7 @@ func (req *reqImpl) KillSession() {
 	req.store.KillSession(req.sid)
 }
 
-func (req *reqImpl) SetHtml(html string) {
+func (req *reqImpl) SetHTML(html string) {
 	req.html = html
 }
 
@@ -164,7 +164,7 @@ type ReqStub struct {
 	FormValueMap map[string]string
 	ModelMap     map[string]interface{}
 	SessionMap   map[string]interface{}
-	Html         string
+	HTML         string
 	Template     string
 	Redirect     string
 	Status       int
@@ -181,62 +181,80 @@ func NewReqStub(method string, path string) *ReqStub {
 	return &req
 }
 
+// Method returns the request method: "GET", "POST", etc..
 func (req *ReqStub) Method() string {
 	return req.MethodString
 }
 
+// IsGet returns true if the request method is GET, false otherwise.
 func (req *ReqStub) IsGet() bool {
 	return req.MethodString == "GET"
 }
 
+// IsPost returns true if the request method is POST, false otherwise.
 func (req *ReqStub) IsPost() bool {
 	return req.MethodString == "POST"
 }
 
+// Path returns the URL path of the request.
 func (req *ReqStub) Path() string {
 	return req.PathString
 }
 
+// FormValue returns the value of a request parameter.
 func (req *ReqStub) FormValue(name string) string {
 	return req.FormValueMap[name]
 }
 
+// SetModelValue
 func (req *ReqStub) SetModelValue(name string, value interface{}) {
 	req.ModelMap[name] = value
 }
 
+// ModelValue returns a keyed model value.
 func (req *ReqStub) ModelValue(name string) interface{} {
 	return req.ModelMap[name]
 }
 
+// Model returns the model as a map.
 func (req *ReqStub) Model() map[string]interface{} {
 	return req.ModelMap
 }
 
+// SetSessionValue puts a named value in the session associated
+// with this request. If the request has no valid session, it creates
+// one. If the keyed value already exists, it is replaced.
 func (req *ReqStub) SetSessionValue(name string, value interface{}) {
 	req.SessionMap[name] = value
 }
 
+// SessionValue returns the named session value. If the key
+// was not found or this request has no valid session, it returns nil.
 func (req *ReqStub) SessionValue(name string) interface{} {
 	return req.SessionMap[name]
 }
 
+// KillSession kills the session associated with this request.
 func (req *ReqStub) KillSession() {
 	req.SessionMap = nil
 }
 
-func (req *ReqStub) SetHtml(html string) {
-	req.Html = html
+// SetHTML sets a html reponse.
+func (req *ReqStub) SetHTML(html string) {
+	req.HTML = html
 }
 
+// SetTemplate sets a template reponse.
 func (req *ReqStub) SetTemplate(template string) {
 	req.Template = template
 }
 
+// SetRedirect sets a redirect reponse.
 func (req *ReqStub) SetRedirect(url string) {
 	req.Redirect = url
 }
 
+// SetStatus sets a status reponse.
 func (req *ReqStub) SetStatus(code int) {
 	req.Status = code
 }

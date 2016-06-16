@@ -48,6 +48,8 @@ func NewMemStore() *MemStore {
 	return st
 }
 
+// ExpireSessions expires old sessions. A session is old if it was
+// not accessed within the last 30 minutes.
 func (st *MemStore) ExpireSessions() {
 	st.mx.Lock()
 	defer st.mx.Unlock()
@@ -61,6 +63,8 @@ func (st *MemStore) ExpireSessions() {
 	}
 }
 
+// TouchSession sets the atime (last access time) of a session to the
+// current time, much like the unix 'touch' command does with files.
 func (st *MemStore) TouchSession(sid string) {
 	st.mx.Lock()
 	defer st.mx.Unlock()
@@ -70,12 +74,16 @@ func (st *MemStore) TouchSession(sid string) {
 	}
 }
 
+// KillSession removes a session.
 func (st *MemStore) KillSession(sid string) {
 	st.mx.Lock()
 	defer st.mx.Unlock()
 	delete(st.sessions, sid)
 }
 
+// PutValue puts a value into a session and returns the session id.
+// If the session with the incoming session id was not found,
+// PutValue creates a new session and returns the new session id.
 func (st *MemStore) PutValue(sid string, key string, value interface{}) string {
 	st.mx.Lock()
 	defer st.mx.Unlock()
@@ -98,6 +106,8 @@ func (st *MemStore) PutValue(sid string, key string, value interface{}) string {
 	return s.sid
 }
 
+// GetValue returns a session value. If the session or the key does not
+// exist, it returns nil.
 func (st *MemStore) GetValue(sid string, key string) interface{} {
 	st.mx.Lock()
 	defer st.mx.Unlock()
@@ -108,6 +118,8 @@ func (st *MemStore) GetValue(sid string, key string) interface{} {
 	return s.values[key]
 }
 
+// GetSessionInfos returns map of maps containg all sessions with
+// their key/value pairs.
 func (st *MemStore) GetSessionInfos() map[string]map[string]interface{} {
 	st.mx.Lock()
 	defer st.mx.Unlock()
