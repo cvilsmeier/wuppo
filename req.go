@@ -22,7 +22,7 @@ type Req interface {
 	// FormValue returns the value of a request parameter.
 	FormValue(name string) string
 
-	// SetModelValue
+	// SetModelValue sets a keyed model value.
 	SetModelValue(key string, value interface{})
 
 	// ModelValue returns a keyed model value.
@@ -157,7 +157,7 @@ func (req *reqImpl) SetStatus(code int) {
 }
 
 // ReqStub implements Req but can be created and manipulated programmatically.
-// Use it for unit-testing your controller logic.
+// Used for unit testing.
 type ReqStub struct {
 	MethodString string
 	PathString   string
@@ -170,6 +170,7 @@ type ReqStub struct {
 	Status       int
 }
 
+// NewReqStub creates a new ReqStub.
 func NewReqStub(method string, path string) *ReqStub {
 	req := ReqStub{
 		MethodString: method,
@@ -206,7 +207,7 @@ func (req *ReqStub) FormValue(name string) string {
 	return req.FormValueMap[name]
 }
 
-// SetModelValue
+// SetModelValue sets a keyed model value.
 func (req *ReqStub) SetModelValue(name string, value interface{}) {
 	req.ModelMap[name] = value
 }

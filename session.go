@@ -41,6 +41,7 @@ type MemStore struct {
 	sessions map[string]*session
 }
 
+// NewMemStore creates a new MemStore.
 func NewMemStore() *MemStore {
 	st := &MemStore{
 		sessions: make(map[string]*session),
