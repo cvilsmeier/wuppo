@@ -34,11 +34,11 @@ type Req interface {
 	// SetSessionValue puts a named value in the session associated
 	// with this request. If the request has no valid session, it creates
 	// one. If the keyed value already exists, it is replaced.
-	SetSessionValue(name string, value string)
+	SetSessionValue(name string, value interface{})
 
-	// SessionValue returns the named session value, or the empty string
-	// if the key was not found or this reqeust has no valid session.
-	SessionValue(name string) string
+	// SessionValue returns the named session value. If the key
+    // was not found or this request has no valid session, it returns nil.
+	SessionValue(name string) interface{}
 
 	// KillSession kills the session associated with this request.
 	KillSession()
@@ -118,7 +118,7 @@ func (req *reqImpl) Model() map[string]interface{} {
 	return req.model
 }
 
-func (req *reqImpl) SetSessionValue(name string, value string) {
+func (req *reqImpl) SetSessionValue(name string, value interface{}) {
 	newSid := req.store.PutValue(req.sid, name, value)
 	if newSid != req.sid {
 		req.sid = newSid
@@ -132,7 +132,7 @@ func (req *reqImpl) SetSessionValue(name string, value string) {
 	}
 }
 
-func (req *reqImpl) SessionValue(name string) string {
+func (req *reqImpl) SessionValue(name string) interface{} {
 	return req.store.GetValue(req.sid, name)
 }
 
@@ -163,7 +163,7 @@ type ReqStub struct {
 	PathString   string
 	FormValueMap map[string]string
 	ModelMap     map[string]interface{}
-	SessionMap   map[string]string
+	SessionMap   map[string]interface{}
 	Html         string
 	Template     string
 	Redirect     string
@@ -176,7 +176,7 @@ func NewReqStub(method string, path string) *ReqStub {
 		PathString:   path,
 		FormValueMap: make(map[string]string),
 		ModelMap:     make(map[string]interface{}),
-		SessionMap:   make(map[string]string),
+		SessionMap:   make(map[string]interface{}),
 	}
 	return &req
 }
@@ -213,11 +213,11 @@ func (req *ReqStub) Model() map[string]interface{} {
 	return req.ModelMap
 }
 
-func (req *ReqStub) SetSessionValue(name string, value string) {
+func (req *ReqStub) SetSessionValue(name string, value interface{}) {
 	req.SessionMap[name] = value
 }
 
-func (req *ReqStub) SessionValue(name string) string {
+func (req *ReqStub) SessionValue(name string) interface{} {
 	return req.SessionMap[name]
 }
 

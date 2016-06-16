@@ -17,17 +17,17 @@ func TestExpireSession(t *testing.T) {
 	store.sessions["sid1"] = &session{
 		sid:    "sid1",
 		atime:  time.Now().Add(-40 * time.Minute),
-		values: make(map[string]string),
+		values: make(map[string]interface{}),
 	}
 	store.sessions["sid2"] = &session{
 		sid:    "sid2",
 		atime:  time.Now().Add(-30 * time.Minute),
-		values: make(map[string]string),
+		values: make(map[string]interface{}),
 	}
 	store.sessions["sid3"] = &session{
 		sid:    "sid3",
 		atime:  time.Now().Add(-20 * time.Minute),
-		values: make(map[string]string),
+		values: make(map[string]interface{}),
 	}
 	store.ExpireSessions()
 	if len(store.sessions) != 2 {
@@ -47,7 +47,7 @@ func TestTouchSession(t *testing.T) {
 	s := &session{
 		sid:    "aaa",
 		atime:  t1,
-		values: make(map[string]string),
+		values: make(map[string]interface{}),
 	}
 	store.sessions["aaa"] = s
 	store.TouchSession("aaa")
