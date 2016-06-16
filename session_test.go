@@ -88,7 +88,7 @@ func TestGetValue(t *testing.T) {
 		t.Errorf("wanted bi")
 	}
 	store.KillSession(sid)
-	if store.GetValue(sid, "name") != "" {
-		t.Errorf("wanted empty string")
+	if store.GetValue(sid, "name") != nil {
+		t.Errorf("wanted nil")
 	}
 }

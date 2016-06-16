@@ -114,7 +114,7 @@ func (st *MemStore) GetValue(sid string, key string) interface{} {
 	defer st.mx.Unlock()
 	s := st.sessions[sid]
 	if s == nil {
-		return ""
+		return nil
 	}
 	return s.values[key]
 }
