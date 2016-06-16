@@ -63,7 +63,7 @@ func serveLogout(req wuppo.Req) {
 }
 
 func serveChat(req wuppo.Req) {
-	name := req.SessionValue("name")
+	name := req.SessionValue("name").(string)
 	if name == "" {
 		req.SetRedirect("/?reason=notLoggedIn")
 		return
