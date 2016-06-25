@@ -15,6 +15,7 @@ type Handler struct {
 	serve           ServeFunc
 	store           SessionStore
 	templatePattern string
+    funcmap template.FuncMap
 }
 
 // ServeFunc is a callback method that responds to an incoming request.
@@ -22,23 +23,26 @@ type ServeFunc func(req Req)
 
 // NewHandler creates a new Handler with a ServerFunc and a SessionStore.
 // See https://golang.org/pkg/html/template/#ParseGlob for a description of the templatePattern.
-func NewHandler(serve ServeFunc, sessionStore SessionStore, templatePattern string) Handler {
+// See https://golang.org/pkg/html/template/#FuncMap for a description of the funcmap.
+func NewHandler(serve ServeFunc, sessionStore SessionStore, templatePattern string, funcmap template.FuncMap) Handler {
 	h := Handler{
 		serve:           serve,
 		store:           sessionStore,
 		templatePattern: templatePattern,
+		funcmap: funcmap,
 	}
 	return h
 }
 
-// DefaultHandler creates a new handler with a ServerFunc function and a
-// in-memory session store. Templates are loaded from "*.html".
-func DefaultHandler(serve ServeFunc) Handler {
+// NewDefaultHandler creates a new handler with a ServerFunc function and a
+// in-memory session store. Templates are loaded from "*.html". Funcmap is nil.
+func NewDefaultHandler(serve ServeFunc) Handler {
 	memstore := NewMemStore()
 	h := Handler{
-		serve:           serve,
-		store:           memstore,
-		templatePattern: "*.html",
+		serve,
+		memstore,
+		"*.html",
+        nil,
 	}
 	return h
 }
@@ -54,7 +58,8 @@ func (handler Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if req.html != "" {
 		io.WriteString(w, req.html)
 	} else if req.template != "" {
-		t, err := template.ParseGlob(handler.templatePattern)
+        t := template.New("").Funcs(handler.funcmap)
+		t, err := t.ParseGlob(handler.templatePattern)
 		if err != nil {
 			panic(err)
 		}

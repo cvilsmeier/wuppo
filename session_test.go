@@ -13,7 +13,7 @@ func TestNewMemStore(t *testing.T) {
 }
 
 func TestExpireSession(t *testing.T) {
-	store := NewMemStore()
+    store := NewMemStore()
 	store.sessions["sid1"] = &session{
 		sid:    "sid1",
 		atime:  time.Now().Add(-40 * time.Minute),
@@ -21,23 +21,28 @@ func TestExpireSession(t *testing.T) {
 	}
 	store.sessions["sid2"] = &session{
 		sid:    "sid2",
-		atime:  time.Now().Add(-30 * time.Minute),
+		atime:  time.Now().Add(-31 * time.Minute),
 		values: make(map[string]interface{}),
 	}
 	store.sessions["sid3"] = &session{
 		sid:    "sid3",
+		atime:  time.Now().Add(-29 * time.Minute),
+		values: make(map[string]interface{}),
+	}
+	store.sessions["sid4"] = &session{
+		sid:    "sid4",
 		atime:  time.Now().Add(-20 * time.Minute),
 		values: make(map[string]interface{}),
 	}
 	store.ExpireSessions()
 	if len(store.sessions) != 2 {
-		t.Errorf("expected 2 sessions to survive")
-	}
-	if _, ok := store.sessions["sid2"]; !ok {
-		t.Errorf("sid2 not found")
+		t.Error("expected 2 sessions to survive but have", len(store.sessions))
 	}
 	if _, ok := store.sessions["sid3"]; !ok {
-		t.Errorf("sid3 not found")
+		t.Error("sid3 not found")
+	}
+	if _, ok := store.sessions["sid4"]; !ok {
+		t.Error("sid4 not found")
 	}
 }
 

@@ -1,0 +1,26 @@
+
+<html>
+<head>
+    <title>Wuppo Funcs Sample</title>
+</head>
+<body>
+
+    <h1>Wuppo Funcs</h1>
+
+    <form method="POST">
+        <p>Enter a phrase and click OK. The phrase will then be reversed<p>
+        <input type="text" name="phrase" placeholder="Enter Phrase">
+        <button type="submit">OK</button>
+    </form>
+
+    <br>
+    <br>
+
+    {{with .phrase}}
+        Phrase was: {{.}}<br>
+        Reversed is: {{. | reverse}}
+    {{end}}
+
+</body>
+</html>
+

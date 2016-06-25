@@ -109,7 +109,7 @@ var theDb = NewDb()
 
 func main() {
 	// init wuppo handler
-	http.Handle("/", wuppo.NewHandler(serve, theSessionStore, "*.html"))
+	http.Handle("/", wuppo.NewHandler(serve, theSessionStore, "*.html", nil))
 	// serve static files (favicon)
 	http.Handle("/favicon.ico", http.FileServer(http.Dir(".")))
 	// for development only: exit if a go file changes
