@@ -19,7 +19,13 @@ type Req interface {
 	// Path returns the URL path of the request.
 	Path() string
 
-	// FormValue returns the value of a request parameter.
+	// HasFormValue returns true if this request has the named form value,
+    // either as a query string or a POST request parameter.
+	HasFormValue(name string) bool
+
+	// FormValue returns the value of a request parameter, or the empty
+    // string if the request parameter was not found in the query string or
+    // in the POST content.
 	FormValue(name string) string
 
 	// SetModelValue sets a keyed model value.
@@ -100,6 +106,15 @@ func (req *reqImpl) IsPost() bool {
 
 func (req *reqImpl) Path() string {
 	return req.r.URL.Path
+}
+
+func (req *reqImpl) HasFormValue(name string) bool {
+	v := req.r.FormValue(name)
+    if v != "" {
+        return true
+    }
+    _, ok := req.r.Form[name]
+    return ok
 }
 
 func (req *reqImpl) FormValue(name string) string {
@@ -201,6 +216,14 @@ func (req *ReqStub) IsPost() bool {
 func (req *ReqStub) Path() string {
 	return req.PathString
 }
+
+// HasFormValue returns true if this request has the named form value,
+// either as a query string or a POST request parameter.
+func (req *ReqStub) HasFormValue(name string) bool {
+	_, ok := req.FormValueMap[name]
+    return ok
+}
+
 
 // FormValue returns the value of a request parameter.
 func (req *ReqStub) FormValue(name string) string {
