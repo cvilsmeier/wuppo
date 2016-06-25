@@ -15,7 +15,7 @@ type Handler struct {
 	serve           ServeFunc
 	store           SessionStore
 	templatePattern string
-    funcmap template.FuncMap
+	funcmap         template.FuncMap
 }
 
 // ServeFunc is a callback method that responds to an incoming request.
@@ -29,7 +29,7 @@ func NewHandler(serve ServeFunc, sessionStore SessionStore, templatePattern stri
 		serve:           serve,
 		store:           sessionStore,
 		templatePattern: templatePattern,
-		funcmap: funcmap,
+		funcmap:         funcmap,
 	}
 	return h
 }
@@ -42,7 +42,7 @@ func NewDefaultHandler(serve ServeFunc) Handler {
 		serve,
 		memstore,
 		"*.html",
-        nil,
+		nil,
 	}
 	return h
 }
@@ -58,7 +58,7 @@ func (handler Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if req.html != "" {
 		io.WriteString(w, req.html)
 	} else if req.template != "" {
-        t := template.New("").Funcs(handler.funcmap)
+		t := template.New("").Funcs(handler.funcmap)
 		t, err := t.ParseGlob(handler.templatePattern)
 		if err != nil {
 			panic(err)

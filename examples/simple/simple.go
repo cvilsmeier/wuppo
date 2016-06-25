@@ -15,7 +15,7 @@ func serve(req wuppo.Req) {
 func main() {
 	// register a default wuppo http.Handler
 	// default means: store session data in memory and
-    // search html templates in current directory
+	// search html templates in current directory
 	http.Handle("/", wuppo.NewDefaultHandler(serve))
 	// start on port 8080
 	fmt.Printf("server is up, now goto http://localhost:8080\n")

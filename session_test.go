@@ -13,7 +13,7 @@ func TestNewMemStore(t *testing.T) {
 }
 
 func TestExpireSession(t *testing.T) {
-    store := NewMemStore()
+	store := NewMemStore()
 	store.sessions["sid1"] = &session{
 		sid:    "sid1",
 		atime:  time.Now().Add(-40 * time.Minute),
