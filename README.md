@@ -7,6 +7,11 @@
 A web framework for Go, ridiculously simple.
 
 
+## Warning
+
+Wuppo is still under development and not suited for production.
+
+
 ## Usage
 
 A very basic usage is this:
